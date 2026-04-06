@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RxCheck — Drug Interaction Checker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#1D9E75;--teal-light:#E1F5EE;--teal-mid:#9FE1CB;
+  --amber:#BA7517;--amber-light:#FAEEDA;--amber-mid:#FAC775;
+  --red:#A32D2D;--red-light:#FCEBEB;--red-mid:#F7C1C1;
+  --blue:#185FA5;--blue-light:#E6F1FB;--blue-mid:#B5D4F4;
+  --green:#3B6D11;--green-light:#EAF3DE;--green-mid:#C0DD97;
+  --gray:#2C2C2A;--gray-mid:#888780;--gray-light:#F1EFE8;--gray-border:#D3D1C7;--gray-soft:#B4B2A9;
+  --white:#fff;--bg:#FAFAF8;
+  --r:10px;--rs:6px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--gray);min-height:100vh}
+nav{background:var(--white);border-bottom:1px solid var(--gray-border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:10}
+.nav-left{display:flex;align-items:center;gap:10px}
+.logo{width:30px;height:30px;background:var(--teal);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.logo-cross{position:relative;width:14px;height:14px}
+.logo-cross::before,.logo-cross::after{content:'';position:absolute;background:white;border-radius:2px}
+.logo-cross::before{width:14px;height:3px;top:50%;left:0;transform:translateY(-50%)}
+.logo-cross::after{width:3px;height:14px;left:50%;top:0;transform:translateX(-50%)}
+.nav-name{font-family:'DM Serif Display',serif;font-size:19px;color:var(--gray)}
+.beta{font-size:10px;background:var(--teal-light);color:var(--teal);padding:2px 8px;border-radius:20px;font-weight:500}
+.nav-right{font-size:11px;color:var(--gray-soft)}
+.hero{max-width:780px;margin:0 auto;padding:3rem 2rem 1.5rem}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.13em;color:var(--teal);margin-bottom:10px;font-weight:500}
+h1{font-family:'DM Serif Display',serif;font-size:34px;line-height:1.2;margin-bottom:10px}
+.hero-sub{font-size:15px;color:var(--gray-mid);line-height:1.7;max-width:540px}
+.main{max-width:780px;margin:0 auto;padding:0 2rem 5rem}
+.section-card{background:var(--white);border:1px solid var(--gray-border);border-radius:var(--r);padding:1.5rem;margin-bottom:1rem}
+.section-label{font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-weight:500;color:var(--teal);margin-bottom:4px}
+.section-title{font-size:16px;font-weight:500;margin-bottom:4px}
+.section-hint{font-size:12px;color:var(--gray-mid);margin-bottom:1.25rem;line-height:1.5}
+.field-group{margin-bottom:14px}
+.field-group label{display:block;font-size:13px;font-weight:500;margin-bottom:4px;color:var(--gray)}
+.field-group .req{color:var(--red);margin-left:2px}
+.field-group input,.field-group select,.field-group textarea{width:100%;border:1px solid var(--gray-border);border-radius:var(--rs);padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--gray);background:var(--bg);outline:none;transition:border-color .2s,background .2s}
+.field-group input:focus,.field-group select:focus,.field-group textarea:focus{border-color:var(--teal);background:var(--white)}
+.field-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888780' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:540px){.two-col{grid-template-columns:1fr}}
+.drug-row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+.drug-row input{flex:1;margin:0}
+.rm-btn{background:none;border:1px solid var(--gray-border);border-radius:var(--rs);color:var(--gray-mid);cursor:pointer;width:34px;height:34px;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;font-family:'DM Sans',sans-serif}
+.rm-btn:hover{border-color:var(--red);color:var(--red)}
+.add-btn{width:100%;padding:8px;border:1px dashed var(--gray-border);border-radius:var(--rs);background:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--gray-mid);cursor:pointer;margin-top:4px;transition:all .2s}
+.add-btn:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-light)}
+.submit-btn{width:100%;padding:14px;background:var(--teal);color:white;border:none;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background .2s;margin-top:4px}
+.submit-btn:hover{background:#168860}
+.submit-btn:disabled{background:var(--gray-border);color:var(--gray-soft);cursor:default}
+.divider{height:1px;background:var(--gray-border);margin:1.25rem 0}
+/* LOADING */
+#loading{display:none;text-align:center;padding:4rem 2rem}
+.spinner{width:40px;height:40px;border:3px solid var(--teal-light);border-top-color:var(--teal);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#load-msg{font-size:14px;color:var(--gray-mid);margin-top:8px}
+/* RESULTS */
+#results{display:none}
+.result-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.result-drugs{font-size:13px;color:var(--gray-mid)}
+.new-btn{font-size:13px;font-family:'DM Sans',sans-serif;color:var(--teal);background:none;border:1px solid var(--teal-mid);border-radius:var(--rs);padding:6px 14px;cursor:pointer}
+.new-btn:hover{background:var(--teal-light)}
+.sev-banner{display:flex;align-items:center;gap:16px;padding:1.25rem 1.5rem;border-radius:var(--r);border:1px solid;margin-bottom:1rem}
+.sev-icon{font-size:30px;flex-shrink:0}
+.sev-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;font-weight:500}
+.sev-name{font-size:20px;font-weight:500}
+.res-card{background:var(--white);border:1px solid var(--gray-border);border-radius:var(--r);padding:1.5rem;margin-bottom:1rem}
+.res-title{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gray-mid);font-weight:500;margin-bottom:12px}
+.res-text{font-size:14px;line-height:1.75;color:var(--gray)}
+.pair-card{border:1px solid var(--gray-border);border-radius:var(--rs);padding:1.25rem;margin-bottom:10px;background:var(--white)}
+.pair-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.pair-drugs{font-size:14px;font-weight:500}
+.pair-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;border:1px solid}
+.pair-sub{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-soft);margin:10px 0 4px;font-weight:500}
+.pair-txt{font-size:13px;color:var(--gray);line-height:1.65}
+.rec-list{list-style:none}
+.rec-list li{display:flex;gap:10px;font-size:13px;line-height:1.65;margin-bottom:9px}
+.rec-list li .arr{color:var(--teal);flex-shrink:0;font-weight:500}
+.cards-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
+@media(max-width:540px){.cards-2{grid-template-columns:1fr}}
+.mini-card{border-radius:var(--r);padding:1.25rem;border:1px solid}
+.mini-title{font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:500;margin-bottom:10px}
+.mini-list{list-style:none}
+.mini-list li{display:flex;gap:8px;font-size:13px;line-height:1.6;margin-bottom:7px;align-items:flex-start}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.disclaimer{font-size:11px;color:var(--gray-mid);line-height:1.6;padding:12px 14px;border:1px solid var(--gray-border);border-radius:var(--rs);background:var(--gray-light);margin-top:1rem}
+.api-note{background:var(--amber-light);border:1px solid var(--amber-mid);border-radius:var(--rs);padding:14px 16px;font-size:13px;color:var(--amber);margin-bottom:1rem;line-height:1.6;display:none}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-left">
+    <div class="logo"><div class="logo-cross"></div></div>
+    <span class="nav-name">RxCheck</span>
+    <span class="beta">Beta</span>
+  </div>
+  <span class="nav-right">Informational use only &mdash; not a substitute for clinical judgment</span>
+</nav>
+
+<div class="hero">
+  <p class="eyebrow">AI-Powered Pharma Tool</p>
+  <h1>Drug Interaction Checker</h1>
+  <p class="hero-sub">Enter medications and patient details to instantly check for drug interactions, understand the clinical risks, and receive actionable guidance.</p>
+</div>
+
+<div class="main">
+  <div id="api-note" class="api-note">
+    <strong>API connection required.</strong> This tool connects to the Claude AI API to generate analysis. If you see an error, ensure you are running this file through a local server or have API access enabled.
+  </div>
+
+  <div id="form-view">
+    <!-- MEDICATIONS -->
+    <div class="section-card">
+      <p class="section-label">Step 1</p>
+      <p class="section-title">Medications</p>
+      <p class="section-hint">Enter all medications the patient is currently taking, including the drugs you want to check.</p>
+      <div id="drug-list">
+        <div class="drug-row"><input type="text" placeholder="e.g. Warfarin" oninput="updateBtn()"><button class="rm-btn" onclick="removeDrug(this)" title="Remove">×</button></div>
+        <div class="drug-row"><input type="text" placeholder="e.g. Aspirin" oninput="updateBtn()"><button class="rm-btn" onclick="removeDrug(this)" title="Remove">×</button></div>
+      </div>
+      <button class="add-btn" onclick="addDrug()">+ Add another medication</button>
+    </div>
+
+    <!-- PATIENT PROFILE -->
+    <div class="section-card">
+      <p class="section-label">Step 2</p>
+      <p class="section-title">Patient Profile</p>
+      <p class="section-hint">Complete patient details improve the accuracy and relevance of the interaction analysis.</p>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label>Age<span class="req">*</span></label>
+          <input type="number" id="age" min="0" max="120" placeholder="e.g. 67" oninput="updateBtn()">
+        </div>
+        <div class="field-group">
+          <label>Biological sex<span class="req">*</span></label>
+          <select id="sex" onchange="updateBtn()">
+            <option value="">Select...</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Intersex</option>
+            <option>Prefer not to say</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label>Ethnicity / Race</label>
+          <select id="ethnicity">
+            <option value="">Select or skip</option>
+            <option>White / Caucasian</option>
+            <option>Black / African American</option>
+            <option>Hispanic / Latino</option>
+            <option>East Asian</option>
+            <option>South Asian</option>
+            <option>Southeast Asian</option>
+            <option>Indigenous / First Nations</option>
+            <option>Middle Eastern / North African</option>
+            <option>Mixed ethnicity</option>
+            <option>Prefer not to say</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Weight</label>
+          <input type="text" id="weight" placeholder="e.g. 72 kg or 158 lbs">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Existing medical conditions<span class="req">*</span></label>
+        <input type="text" id="conditions" placeholder="e.g. Atrial fibrillation, Type 2 diabetes, hypertension" oninput="updateBtn()">
+      </div>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label>Kidney function</label>
+          <select id="kidney">
+            <option value="">Unknown / Not tested</option>
+            <option>Normal (eGFR &gt;60)</option>
+            <option>Mild impairment (eGFR 45–60)</option>
+            <option>Moderate impairment (eGFR 30–44)</option>
+            <option>Severe impairment (eGFR &lt;30)</option>
+            <option>End-stage renal disease</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Liver function</label>
+          <select id="liver">
+            <option value="">Unknown / Not tested</option>
+            <option>Normal</option>
+            <option>Mild impairment (Child-Pugh A)</option>
+            <option>Moderate impairment (Child-Pugh B)</option>
+            <option>Severe impairment (Child-Pugh C)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label>Pregnancy status</label>
+          <select id="pregnancy">
+            <option value="">Not applicable / Unknown</option>
+            <option>Not pregnant</option>
+            <option>Pregnant — 1st trimester</option>
+            <option>Pregnant — 2nd trimester</option>
+            <option>Pregnant — 3rd trimester</option>
+            <option>Breastfeeding</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Known allergies</label>
+          <input type="text" id="allergies" placeholder="e.g. Penicillin, sulfa drugs">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Any additional context</label>
+        <input type="text" id="extra" placeholder="e.g. Post-surgery, undergoing chemotherapy, recent hospitalization">
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="runCheck()" disabled>Generate Interaction Report</button>
+  </div>
+
+  <!-- LOADING -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p style="font-size:14px;color:var(--gray-mid)">Analyzing interactions</p>
+    <p id="load-msg" style="font-size:12px;color:var(--gray-soft);margin-top:6px">Reviewing drug mechanisms...</p>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results"></div>
+</div>
+
+<script>
+const LOAD_MSGS=["Reviewing drug mechanisms...","Checking pharmacokinetic interactions...","Assessing patient-specific risk factors...","Evaluating contraindications...","Generating clinical recommendations..."];
+
+function addDrug(){
+  const row=document.createElement("div");row.className="drug-row";
+  row.innerHTML=`<input type="text" placeholder="e.g. Metformin" oninput="updateBtn()"><button class="rm-btn" onclick="removeDrug(this)" title="Remove">×</button>`;
+  document.getElementById("drug-list").appendChild(row);row.querySelector("input").focus();updateBtn();
+}
+function removeDrug(btn){const list=document.getElementById("drug-list");if(list.children.length>2){btn.parentElement.remove();updateBtn();}}
+function getDrugs(){return Array.from(document.querySelectorAll("#drug-list input")).map(i=>i.value.trim()).filter(Boolean);}
+function v(id){return document.getElementById(id).value.trim();}
+function updateBtn(){
+  const ok=getDrugs().length>=2&&v("age")&&v("sex")&&v("conditions");
+  document.getElementById("submit-btn").disabled=!ok;
+}
+
+function sevStyle(s){
+  const sn=(s||"").toLowerCase();
+  if(sn.includes("severe")||sn.includes("high")||sn.includes("contraindicated"))return{bg:getComputedStyle(document.documentElement).getPropertyValue("--red-light"),text:getComputedStyle(document.documentElement).getPropertyValue("--red"),border:getComputedStyle(document.documentElement).getPropertyValue("--red-mid"),icon:"⚠"};
+  if(sn.includes("moderate"))return{bg:getComputedStyle(document.documentElement).getPropertyValue("--amber-light"),text:getComputedStyle(document.documentElement).getPropertyValue("--amber"),border:getComputedStyle(document.documentElement).getPropertyValue("--amber-mid"),icon:"◆"};
+  if(sn.includes("mild")||sn.includes("low")||sn.includes("minor"))return{bg:getComputedStyle(document.documentElement).getPropertyValue("--blue-light"),text:getComputedStyle(document.documentElement).getPropertyValue("--blue"),border:getComputedStyle(document.documentElement).getPropertyValue("--blue-mid"),icon:"●"};
+  return{bg:getComputedStyle(document.documentElement).getPropertyValue("--green-light"),text:getComputedStyle(document.documentElement).getPropertyValue("--green"),border:getComputedStyle(document.documentElement).getPropertyValue("--green-mid"),icon:"✓"};
+}
+
+async function runCheck(){
+  const drugs=getDrugs();
+  const patient={age:v("age"),sex:v("sex"),ethnicity:v("ethnicity"),weight:v("weight"),conditions:v("conditions"),kidney:v("kidney"),liver:v("liver"),pregnancy:v("pregnancy"),allergies:v("allergies"),extra:v("extra")};
+  document.getElementById("form-view").style.display="none";
+  document.getElementById("loading").style.display="block";
+  let mi=0;const interval=setInterval(()=>{document.getElementById("load-msg").textContent=LOAD_MSGS[++mi%LOAD_MSGS.length];},2000);
+
+  const patientStr=Object.entries(patient).filter(([k,v])=>v).map(([k,v])=>`${k}: ${v}`).join(", ");
+  const prompt=`You are a senior clinical pharmacist. Analyze drug interactions for the following:
+
+Medications: ${drugs.join(", ")}
+Patient: ${patientStr}
+
+Return ONLY valid JSON, no markdown, no extra text:
+{"overallSeverity":"<None|Mild|Moderate|Severe>","overallSummary":"<2-3 sentence plain-language summary tailored to this specific patient>","pairs":[{"drug1":"<name>","drug2":"<name>","severity":"<None|Mild|Moderate|Severe>","mechanism":"<plain English explanation of the interaction mechanism, 1-2 sentences>","clinicalEffect":"<what actually happens to this specific patient, considering their profile, 1-2 sentences>","recommendation":"<specific action to take, 1-2 sentences>"}],"patientSpecificRisks":["<risk specific to this patient's profile 1>","<risk 2>","<risk 3>"],"recommendations":["<actionable recommendation 1>","<rec 2>","<rec 3>","<rec 4>"],"monitoringParams":["<what to monitor and why 1>","<monitor 2>","<monitor 3>"]}`;
+
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json","x-api-key":"YOUR_API_KEY_HERE","anthropic-version":"2023-06-01"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1500,messages:[{role:"user",content:prompt}]})
+    });
+    const data=await res.json();
+    const text=data.content[0].text.replace(/```json|```/g,"").trim();
+    const r=JSON.parse(text);
+    clearInterval(interval);document.getElementById("loading").style.display="none";
+    showResults(r,drugs,patient);
+  }catch(e){
+    clearInterval(interval);document.getElementById("loading").style.display="none";
+    document.getElementById("form-view").style.display="block";
+    document.getElementById("api-note").style.display="block";
+    document.getElementById("api-note").innerHTML="<strong>Connection error.</strong> The API call could not be completed from a local file due to browser security restrictions. To use RxCheck, open it through a local server (e.g. run <code>python3 -m http.server</code> in the same folder and visit localhost:8000) or deploy it online.";
+  }
+}
+
+function showResults(r,drugs,patient){
+  const sv=sevStyle(r.overallSeverity);
+  const pairs=(r.pairs||[]).map(p=>{const ps=sevStyle(p.severity);return`<div class="pair-card"><div class="pair-top"><span class="pair-drugs">${p.drug1} + ${p.drug2}</span><span class="pair-badge" style="background:${ps.bg.trim()};color:${ps.text.trim()};border-color:${ps.border.trim()}">${p.severity}</span></div><p class="pair-sub">Why they interact</p><p class="pair-txt">${p.mechanism}</p><p class="pair-sub">Clinical effect for this patient</p><p class="pair-txt">${p.clinicalEffect}</p><p class="pair-sub">What to do</p><p class="pair-txt">${p.recommendation}</p></div>`;}).join("");
+  const recs=(r.recommendations||[]).map(x=>`<li><span class="arr">→</span>${x}</li>`).join("");
+  const monitor=(r.monitoringParams||[]).map(x=>`<li><span class="dot" style="background:var(--teal)"></span>${x}</li>`).join("");
+  const risks=(r.patientSpecificRisks||[]).map(x=>`<li><span class="dot" style="background:var(--amber)"></span>${x}</li>`).join("");
+  document.getElementById("results").innerHTML=`
+    <div class="result-meta">
+      <div><p style="font-size:12px;color:var(--gray-soft);margin-bottom:2px">Medications checked</p><p style="font-size:14px;font-weight:500">${drugs.join(", ")}</p></div>
+      <button class="new-btn" onclick="location.reload()">New Check</button>
+    </div>
+    <div class="sev-banner" style="background:${sv.bg.trim()};border-color:${sv.border.trim()}">
+      <span class="sev-icon">${sv.icon}</span>
+      <div><p class="sev-eyebrow" style="color:${sv.text.trim()}">Overall Interaction Risk</p><p class="sev-name" style="color:${sv.text.trim()}">${r.overallSeverity} Risk</p></div>
+    </div>
+    <div class="res-card"><p class="res-title">Clinical Summary</p><p class="res-text">${r.overallSummary}</p></div>
+    <p class="res-title" style="margin-bottom:10px">Pairwise Interaction Analysis</p>
+    ${pairs}
+    <div class="res-card"><p class="res-title">Recommendations</p><ul class="rec-list">${recs}</ul></div>
+    <div class="cards-2">
+      <div class="mini-card" style="background:var(--teal-light);border-color:var(--teal-mid)"><p class="mini-title" style="color:var(--teal)">What to Monitor</p><ul class="mini-list">${monitor}</ul></div>
+      <div class="mini-card" style="background:var(--amber-light);border-color:var(--amber-mid)"><p class="mini-title" style="color:var(--amber)">Patient-Specific Risks</p><ul class="mini-list">${risks}</ul></div>
+    </div>
+    <div class="disclaimer">⚕ RxCheck is for informational purposes only and does not constitute medical advice. Always consult a qualified healthcare professional or pharmacist before making any medication decisions.</div>`;
+  document.getElementById("results").style.display="block";
+}
+</script>
+</body>
+</html>
