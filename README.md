@@ -26,11 +26,6 @@ RxCheck is an AI-powered drug interaction checker built for clinical and pharma 
 ## Tech Stack
 HTML, CSS, JavaScript, Claude AI API (claude-sonnet)
 
-## How to Run
-1. Clone or download the repository
-2. Add your Anthropic API key to the `x-api-key` field in the fetch headers
-3. Run a local server: `python3 -m http.server 8000 --directory ~/Downloads`
-4. Open `http://localhost:8000/rxcheck_v2%20(1).html` in Chrome
 
 ## Target Users
 Pharmacists, clinicians, and pharma teams who need fast, patient-contextualised drug interaction checks in regulated healthcare environments.
