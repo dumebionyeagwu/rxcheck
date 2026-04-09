@@ -11,11 +11,11 @@ st.set_page_config(
 st.markdown("""
 <style>
     .brand { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #888780; margin-bottom: 4px; }
-    .severity-severe { background-color: #FCEBEB; border: 1px solid #F7C1C1; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-    .severity-moderate { background-color: #FAEEDA; border: 1px solid #FAC775; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-    .severity-mild { background-color: #E6F1FB; border: 1px solid #B5D4F4; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-    .severity-none { background-color: #EAF3DE; border: 1px solid #C0DD97; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-    .pair-card { background-color: #ffffff; border: 1px solid #D3D1C7; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .severity-severe { background-color: #FCEBEB; border: 1px solid #F7C1C1; border-radius: 8px; padding: 16px; margin-bottom: 16px; color: #7F1D1D; }
+    .severity-moderate { background-color: #FAEEDA; border: 1px solid #FAC775; border-radius: 8px; padding: 16px; margin-bottom: 16px; color: #78350F; }
+    .severity-mild { background-color: #E6F1FB; border: 1px solid #B5D4F4; border-radius: 8px; padding: 16px; margin-bottom: 16px; color: #1E3A5F; }
+    .severity-none { background-color: #EAF3DE; border: 1px solid #C0DD97; border-radius: 8px; padding: 16px; margin-bottom: 16px; color: #1A3A0F; }
+    .pair-card { background-color: #1E1E1E; border: 1px solid #444; border-radius: 8px; padding: 16px; margin-bottom: 12px; color: #F0F0F0; }
     .disclaimer { font-size: 12px; color: #888780; background-color: #F1EFE8; border: 1px solid #D3D1C7; border-radius: 6px; padding: 12px; margin-top: 16px; }
     div[data-testid="stForm"] { border: none; padding: 0; }
 </style>
