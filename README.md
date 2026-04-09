@@ -1,5 +1,8 @@
 # RxCheck — AI-Powered Drug Interaction Checker
 
+## Live Demo
+Try it here: [rxcheck.streamlit.app](https://rxcheck.streamlit.app)
+
 ## The Problem
 Clinicians and pharmacists managing patients on multiple medications face a real risk of harmful drug interactions. Checking interactions manually is time-consuming, inconsistent, and often fails to account for patient-specific factors like kidney function, ethnicity, or comorbidities that significantly affect drug metabolism and risk.
 
